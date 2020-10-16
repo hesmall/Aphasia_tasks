@@ -1,6 +1,6 @@
 %% stimuli for pitch discrimination task:
 %(similar to McPherson and McDermott 2018)
-cd('/Users/tamaregev/Dropbox/postdoc/Fedorenko/Prosody/Aphasia/2ToneTask/forHanna')
+cd('/Users/tamaregev/Dropbox/postdoc/Fedorenko/Prosody/Aphasia/2ToneTask')
 %% conditions: frequency intervals, in semitones
 dS = [0.125 0.25 0.5 1 2];%difference in semitones
 nCond = length(dS);
@@ -22,42 +22,58 @@ end
 %params
     fs=44100;
     silence = [0 0];
-    ramp = [30 30];%ms
+    ramp = [0 0];%ms
+    ramp_durs_ms = [30 50 75 100];
     dur = 0.4;%s
     reduction = 0.5;
    
     %% f1
-    soundwaves1=nan(nf1,fs*dur+1);
-    for fi=1:nf1
-        f = f1s(fi);
-        [ data, t ] = SynthPureTone( f, dur, ramp, silence, reduction, fs, true );
-        data=rmsnorm(data);
-        soundwaves1(fi,:) = data;
-        plot(t,data)
-        soundsc(data,fs)  
-        pause
-        audiowrite(['f1pure' filesep 'f1_' num2str(fi) '.wav'],data,fs)
-    end
-    save(['f1pure' filesep 'f1all'],'soundwaves1')
-    %% f2
-    soundwaves2=nan(nf1,nCond,fs*dur+1);
-    for fi=1:nf1
-        hold off
-        for cj=1:nCond
-            f = f2s(fi,cj);
+    for iramp = 1:length(ramp_durs_ms)
+        rampdir = ['f1pure/ramp' num2str(ramp_durs_ms(iramp))];
+        if ~exist(rampdir,'dir')
+            mkdir(rampdir)
+        end
+        soundwaves1=nan(nf1,fs*dur+1);
+        for fi=1:nf1
+            f = f1s(fi);
             [ data, t ] = SynthPureTone( f, dur, ramp, silence, reduction, fs, true );
             data=rmsnorm(data);
+            data = hann(data,ramp_durs_ms(iramp),fs);
+            soundwaves1(fi,:) = data;
             plot(t,data)
-            %pwelch(data,[],[],[],fs)
-            soundsc(data,fs)
-            pause
-            audiowrite(['f2pure' filesep 'f2_' num2str(fi) '_c' num2str(cj) '.wav'],data,fs)
-            soundwaves2(fi,cj,:) = data;
-            hold all
+            soundsc(data,fs)  
+           % pause
+            audiowrite([rampdir filesep 'f1_' num2str(fi) '_pure.wav'],data,fs)
         end
-    end 
-    save(['f2pure' filesep 'f2all'],'soundwaves2')
-%% synth complex tones (Malinda script)
+        save([rampdir filesep 'f1all'],'soundwaves1')
+    end
+    %% f2
+    for iramp = 1:length(ramp_durs_ms)
+        rampdir = ['f2pure/ramp' num2str(ramp_durs_ms(iramp))];
+        if ~exist(rampdir,'dir')
+            mkdir(rampdir)
+        end
+
+        soundwaves2=nan(nf1,nCond,fs*dur+1);
+        for fi=1:nf1
+            hold off
+            for cj=1:nCond
+                f = f2s(fi,cj);
+                [ data, t ] = SynthPureTone( f, dur, ramp, silence, reduction, fs, true );
+                data=rmsnorm(data);
+                data = hann(data,ramp_durs_ms(iramp),fs);
+                plot(t,data)
+                %pwelch(data,[],[],[],fs)
+                soundsc(data,fs)
+              %  pause
+                audiowrite([rampdir filesep 'f2_' num2str(fi) '_c' num2str(cj) '_pure.wav'],data,fs)
+                soundwaves2(fi,cj,:) = data;
+                hold all
+            end
+        end 
+        save([rampdir filesep 'f2all'],'soundwaves2')
+    end
+%% synth complex tones (using Malinda's function)
     %params
     harm_nums = 1:100;
     jitt_amt = 0;
@@ -66,45 +82,54 @@ end
     JitterString = [];
     centroid = [];    
     %% f1
-    
-    soundwaves1=nan(nf1,fs*dur+1);
-    for fi=1:nf1
-        f = f1s(fi);
-        data = zeros(1,size(soundwaves1,2));
-        [signal, jitter_m] = generate_singlenote_vary_envelope_jitter_randphase_Tamar(f, harm_nums, jitt_amt,jitt, dur, fs, dist,JitterString, centroid);
-        data(1:length(signal))=signal;
-        t=0:1/fs:length(data)/fs-1/fs;
-        data = hann(data,ramp(1),fs);
-        data = rmsnorm(data);    
-        soundwaves1(fi,:) = data;
-        plot(t,data)
-        soundsc(data,fs)  
-        pause
-        audiowrite(['f1complex' filesep 'f1_' num2str(fi) '.wav'],data,fs)
-    end
-    save(['f1complex' filesep 'f1all'],'soundwaves1')
-    
-    %% f2
-    
-    soundwaves2=nan(nf1,nCond,fs*dur+1);
-    for fi=1:nf1
-        hold off
-        for cj=1:nCond
-            f = f2s(fi,cj);
-            data = zeros(1,size(soundwaves2,3));
+      for iramp = 1:length(ramp_durs_ms)
+        rampdir = ['f1complex/ramp' num2str(ramp_durs_ms(iramp))];
+        if ~exist(rampdir,'dir')
+            mkdir(rampdir)
+        end
+        soundwaves1=nan(nf1,fs*dur+1);
+        for fi=1:nf1
+            f = f1s(fi);
+            data = zeros(1,size(soundwaves1,2));
             [signal, jitter_m] = generate_singlenote_vary_envelope_jitter_randphase_Tamar(f, harm_nums, jitt_amt,jitt, dur, fs, dist,JitterString, centroid);
             data(1:length(signal))=signal;
             t=0:1/fs:length(data)/fs-1/fs;
-            data=rmsnorm(data);
+            data = rmsnorm(data);    
+            data = hann(data,ramp_durs_ms(iramp),fs);
+            soundwaves1(fi,:) = data;
             plot(t,data)
-            %pwelch(data,[],[],[],fs)
-            soundsc(data,fs)
-            pause
-            audiowrite(['f2complex' filesep 'f2_' num2str(fi) '_c' num2str(cj) '.wav'],data,fs)
-            soundwaves2(fi,cj,:) = data;
-            hold all
+            soundsc(data,fs)  
+          %  pause
+            audiowrite([rampdir filesep 'f1_' num2str(fi) '_complex.wav'],data,fs)
         end
-    end 
-    save(['f2complex' filesep 'f2all'],'soundwaves2')
-
-    
+        save([rampdir filesep 'f1all'],'soundwaves1')
+      end
+    %% f2
+    for iramp = 1:length(ramp_durs_ms)
+        rampdir = ['f2complex/ramp' num2str(ramp_durs_ms(iramp))];
+        if ~exist(rampdir,'dir')
+            mkdir(rampdir)
+        end
+        figure
+        soundwaves2=nan(nf1,nCond,fs*dur+1);
+        for fi=1:nf1
+            hold off
+            for cj=1:nCond
+                f = f2s(fi,cj);
+                data = zeros(1,size(soundwaves2,3));
+                [signal, jitter_m] = generate_singlenote_vary_envelope_jitter_randphase_Tamar(f, harm_nums, jitt_amt,jitt, dur, fs, dist,JitterString, centroid);
+                data(1:length(signal))=signal;
+                t=0:1/fs:length(data)/fs-1/fs;
+                data=rmsnorm(data);
+                data = hann(data,ramp_durs_ms(iramp),fs);
+                plot(t,data)
+                %pwelch(data,[],[],[],fs)
+                soundsc(data,fs)
+             %   pause
+                audiowrite([rampdir filesep 'f2_' num2str(fi) '_c' num2str(cj) '_complex.wav'],data,fs)
+                soundwaves2(fi,cj,:) = data;
+                hold all
+            end
+        end 
+        save([rampdir filesep 'f2all'],'soundwaves2')
+    end
