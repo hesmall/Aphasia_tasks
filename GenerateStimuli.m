@@ -23,7 +23,7 @@ end
     fs=44100;
     silence = [0 0];
     ramp = [0 0];%ms
-    ramp_durs_ms = [30 50 75 100];
+    ramp_durs_ms = 30;%[30 50 75 100]; %we chose 30, so don't need to generate others
     dur = 0.4;%s
     reduction = 0.5;
    
@@ -73,7 +73,9 @@ end
         end 
         save([rampdir filesep 'f2all'],'soundwaves2')
     end
-%% synth complex tones (using Malinda's function)
+    
+    
+    %% synth complex tones (using Malinda's function)
     %params
     harm_nums = 1:100;
     jitt_amt = 0;
