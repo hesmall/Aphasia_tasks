@@ -43,9 +43,9 @@ end
             plot(t,data)
             soundsc(data,fs)  
            % pause
-            audiowrite([rampdir filesep 'f1_' num2str(fi) '_pure.wav'],data,fs)
+            audiowrite(strcat(rampdir, filesep, 'f1_', num2str(fi), '_pure.wav'),data,fs)
         end
-        save([rampdir filesep 'f1all'],'soundwaves1')
+        save(strcat(rampdir, filesep, 'f1all'),'soundwaves1')
     end
     %% f2
     for iramp = 1:length(ramp_durs_ms)
@@ -66,12 +66,12 @@ end
                 %pwelch(data,[],[],[],fs)
                 soundsc(data,fs)
               %  pause
-                audiowrite([rampdir filesep 'f2_' num2str(fi) '_c' num2str(cj) '_pure.wav'],data,fs)
+                audiowrite(strcat(rampdir, filesep, 'f2_', num2str(fi), '_c', num2str(cj), '_pure.wav'),data,fs)
                 soundwaves2(fi,cj,:) = data;
                 hold all
             end
         end 
-        save([rampdir filesep 'f2all'],'soundwaves2')
+        save(strcat(rampdir, filesep, 'f2all'),'soundwaves2')
     end
     
     
@@ -102,9 +102,9 @@ end
             plot(t,data)
             soundsc(data,fs)  
           %  pause
-            audiowrite([rampdir filesep 'f1_' num2str(fi) '_complex.wav'],data,fs)
+            audiowrite(strcat(rampdir, filesep, 'f1_', num2str(fi), '_complex.wav'),data,fs)
         end
-        save([rampdir filesep 'f1all'],'soundwaves1')
+        save(strcat(rampdir, filesep, 'f1all'),'soundwaves1')
       end
     %% f2
     for iramp = 1:length(ramp_durs_ms)
@@ -128,10 +128,10 @@ end
                 %pwelch(data,[],[],[],fs)
                 soundsc(data,fs)
              %   pause
-                audiowrite([rampdir filesep 'f2_' num2str(fi) '_c' num2str(cj) '_complex.wav'],data,fs)
+                audiowrite(strcat(rampdir, filesep, 'f2_', num2str(fi), '_c', num2str(cj), '_complex.wav'),data,fs)
                 soundwaves2(fi,cj,:) = data;
                 hold all
             end
         end 
-        save([rampdir filesep 'f2all'],'soundwaves2')
+        save(strcat(rampdir, filesep, 'f2all'),'soundwaves2')
     end
