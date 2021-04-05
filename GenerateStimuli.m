@@ -1,6 +1,6 @@
 %% stimuli for pitch discrimination task:
 %(similar to McPherson and McDermott 2018)
-audio_dir= "/Users/hsmall/'Dropbox (MIT)'/0_projects/aphasia/aphasia_web/audio_functions/audio_to_norm/" %generate directly into folder where I will norm the audio to certain loudness
+audio_dir= "" %generate in this folder 
 %% conditions: frequency intervals, in semitones
 dS = [0.125 0.25 0.75 2];%difference in semitones -- HS changed : replaced 0.5 and 1 with 0.75, to have less trials
 nCond = length(dS);
@@ -29,7 +29,7 @@ end
    
     %% f1
     for iramp = 1:length(ramp_durs_ms)
-        rampdir = strcat(audio_dir,'pure');
+        rampdir = strcat(audio_dir,'pure')
         if ~exist(rampdir,'dir')
             mkdir(rampdir)
         end
@@ -108,7 +108,7 @@ end
       end
     %% f2
     for iramp = 1:length(ramp_durs_ms)
-        rampdir = strcat(audio_dir,'pure');
+        rampdir = strcat(audio_dir,'complex');
         if ~exist(rampdir,'dir')
             mkdir(rampdir)
         end
