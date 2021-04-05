@@ -1,6 +1,6 @@
 %% stimuli for pitch discrimination task:
 %(similar to McPherson and McDermott 2018)
-cd('/Users/tamaregev/Dropbox/postdoc/Fedorenko/Prosody/Aphasia/2ToneTask')
+%cd('/Users/tamaregev/Dropbox/postdoc/Fedorenko/Prosody/Aphasia/2ToneTask')
 %% conditions: frequency intervals, in semitones
 dS = [0.125 0.25 0.75 2];%difference in semitones -- HS changed : replaced 0.5 and 1 with 0.75, to have less trials
 nCond = length(dS);
